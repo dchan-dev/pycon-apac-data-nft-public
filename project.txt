@@ -1,5 +1,4 @@
-solves a real-world problem
-
+Build a GenAI app solves a real-world problem
 
 What industry and topic did you choose?
 Why did you choose this topic?
