@@ -1,0 +1,21 @@
+solves a real-world problem
+
+
+What industry and topic did you choose?
+Why did you choose this topic?
+What dataset and model did you use?
+How did you solve the problem?
+technical details, techniques you use, RAG (retrieval augmented generation)
+
+include footage that shows the project functioning on the device
+
+Is this a new and original idea, or has this been done before?
+How well does this solve a real business problem for your industry?
+How have you combined relevant and interesting datasets and tools?
+Is your application easy for the end user to understand?
+Does it provide relevant and insightful information?
+Can your application/RAG model scale well at a linear cost?
+Can it accommodate additional features without rewriting most of the code base?
+
+
+
