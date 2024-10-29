@@ -1,20 +1,43 @@
-Build a GenAI app solves a real-world problem
+Is your GenAI app solves a real-world problem?
 
-What industry and topic did you choose?
-Why did you choose this topic?
-What dataset and model did you use?
-How did you solve the problem?
-technical details, techniques you use, RAG (retrieval augmented generation)
+
+1 What industry and topic did you choose?
+
+
+2 Why did you choose this topic?
+
+
+3 What dataset and model did you use?
+
+
+4 How did you solve the problem?
+
+
+5 technical details, techniques you use, RAG (retrieval augmented generation)?
+
+
+6 Is this a new and original idea, or has this been done before?
+
+
+7 How well does this solve a real business problem for your industry?
+
+
+8 How have you combined relevant and interesting datasets and tools?
+
+
+9 Is your application easy for the end user to understand?
+
+
+10 Does it provide relevant and insightful information?
+
+
+11 Can your application/RAG model scale well at a linear cost?
+
+
+12 Can it accommodate additional features without rewriting most of the code base?
+
 
 include footage that shows the project functioning on the device
-
-Is this a new and original idea, or has this been done before?
-How well does this solve a real business problem for your industry?
-How have you combined relevant and interesting datasets and tools?
-Is your application easy for the end user to understand?
-Does it provide relevant and insightful information?
-Can your application/RAG model scale well at a linear cost?
-Can it accommodate additional features without rewriting most of the code base?
 
 
 
