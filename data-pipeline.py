@@ -100,3 +100,81 @@ def cryptocurrencies_symbol_3():
 
 
 
+
+
+# Silver layer: joining tables while ensuring data quality
+# Create structured stream from streaming table
+# Keep only the proper transactions. Fail if cost center isn't correct, discard the others.
+@dlt.table(
+    table_properties={'quality': 'silver'},
+    comment="Livestream of new transactions, cleaned and compliant"
+)
+@dlt.expect("Payments should be this year", "(CAST(payment_date as TIMESTAMP) > date('2020-12-31'))")
+@dlt.expect_or_drop("product amount and trans fee should be positive", "(CAST(product_amount as INT) > 0 AND CAST(transaction_fee as INT) > 0)")
+@dlt.expect_or_drop("transaction is successfully completed", "(transaction_status in ('Successful'))")
+@dlt.expect_or_drop("product category must be specified", "(product_category IS NOT NULL)")
+@dlt.expect_or_drop("trans id must be specified", "(transaction_id IS NOT NULL)")
+@dlt.expect_or_drop("ticker must be specified", "(ticker IS NOT NULL)")
+def cleaned_txs_18():
+  txs = dlt.read_stream("raw_trans_18").select("transaction_id", "user_id", "payment_date", "ticker", "product_category", "product_amount", "transaction_fee", "loyalty_points", "location", "transaction_status").alias("txs")
+  symbol = dlt.read("cryptocurrencies_symbol_3").alias("symbol")
+
+  return (
+    txs.join(symbol, txs.ticker==symbol.symbol, "inner")
+     .selectExpr("txs.*", "symbol.name as name")
+  )
+
+
+
+# Silver layer: joining tables while ensuring data quality
+# Create materialized view from table
+# Keep only the proper twitters. Fail if cost center isn't correct, discard the others.
+@dlt.view(
+    comment="CSV of new twitters, cleaned and compliant"
+)
+def twitters_9():
+  blockchain_twitter = dlt.read_stream("raw_blockchain_tweet_5").select("user_name", "user_location", "user_followers", "user_verified", "date", "text", lower(col("hashtags")).alias("hashtags")).alias("blockchain_twitter")
+
+  bitcoin_twitter = dlt.read_stream("raw_bitcoin_tweet_5").select("user_name", "user_location", "user_followers", "user_verified", "date", "text", lower(col("hashtags")).alias("hashtags")).alias("bitcoin_twitter")
+
+  twitter = blockchain_twitter.unionByName(bitcoin_twitter).alias("twitter")
+
+  symbol = dlt.read("cryptocurrencies_symbol_3").alias("symbol")
+  return (
+    twitter.join(symbol, twitter.hashtags.isNotNull() & twitter.hashtags.contains(symbol.name), "inner")
+     .selectExpr("twitter.*", "symbol.symbol as symbol")
+ )
+
+
+
+
+
+# gold layer: joining tables while ensuring data quality
+# Create Delta Live Tables from csv
+# Keep only the proper twitters. Fail if cost center isn't correct, discard the others.
+@dlt.table(table_properties={'quality': 'silver'})
+@dlt.expect_or_drop("user name must be specified", "(user_name IS NOT NULL)")
+@dlt.expect_or_drop("user location must be specified", "(user_location IS NOT NULL)")
+@dlt.expect_or_drop("date must be specified", "(date IS NOT NULL)")
+@dlt.expect_or_drop("user followers must be over 20", "(user_followers > 20)")
+@dlt.expect_or_drop("hashtags must be specified", "(hashtags IS NOT NULL)")
+def cleaned_twitters_9():
+  return dlt.read_stream("twitters_9")
+
+
+
+# gold layer: joining tables while ensuring data quality
+# these tables will be requested at scale using a SQL Endpoint
+@dlt.create_table(
+  comment="Combines transactions by ticker to generate summary report",
+  table_properties={'pipelines.autoOptimize.zOrderCols': 'transaction_fee'}
+)
+def trans_sum():
+  return (
+    dlt.read("cleaned_txs_18").groupBy("name", "ticker")
+     .agg(
+        sum("transaction_fee").alias("transaction_fee"),
+        sum("product_amount").alias("product_amount"),
+        sum("loyalty_points").alias("loyalty_points")
+     )
+  )
