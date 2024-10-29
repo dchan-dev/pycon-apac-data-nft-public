@@ -1,4 +1,4 @@
-Is your GenAI app solves a real-world problem?
+Does your GenAI app solve a real-world problem?
 
 
 1 What industry and topic did you choose?
@@ -38,6 +38,3 @@ Is your GenAI app solves a real-world problem?
 
 
 include footage that shows the project functioning on the device
-
-
-
