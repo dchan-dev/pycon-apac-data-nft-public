@@ -37,4 +37,4 @@ Does your GenAI app solve a real-world problem?
 12 Can it accommodate additional features without rewriting most of the code base?
 
 
-include footage that shows the project functioning on the device
+include footage that shows the project functioning on the device?
